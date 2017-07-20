@@ -1,9 +1,9 @@
-##Grammar Specification options
+## Grammar Specification options
 
 `Grammar.Lex` and `Grammar.Syntax` parts are similar in notation and functionality to [Parsing Expression Grammars (`PEGs`)](https://en.wikipedia.org/wiki/Parsing_expression_grammar),  [(extended) BNF](https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form)-like notation can also be used (see below)
 
 
-###Contents
+### Contents
 
 * [Extra Settings](#extra-settings)
     1. [Code Folding **(new, optional)**](#code-folding)
@@ -23,7 +23,7 @@
 
 
 
-###Extra Settings
+### Extra Settings
 
 * `Grammar.RegExpID` defines the prefix `ID` for any regular expressions (represented as strings) used in the grammar
 
@@ -59,7 +59,7 @@ example:
 `editor_specific_setting_id  -> editor_specific_setting_value`
 
 
-####Code Folding
+1 Code Folding
 **(new, optional)**
 
 Generic, editor-independent, code folding functionality is supported (by generic folders implementations).
@@ -93,7 +93,7 @@ For example:
 
 
 
-####Code Matching
+1 Code Matching
 **(new, optional)**
 
 Generic, editor-independent, code token matching functionality is supported (by generic matchers implementations).
@@ -127,7 +127,7 @@ For example:
 ```
 
 
-###Style Model
+### Style Model
 
 `Grammar.Style` Model defines the mapping of tokens to editor styles and is a map of the form:
 
@@ -135,14 +135,14 @@ For example:
 
 
 
-###Fold Model
+### Fold Model
 **(not available)**
 
 In future, support a parametrisable `Grammar.Fold` Model which can parametrise code folders
 for user-defined custom code folding (see [above](#code-folding)).
 
 
-###Match Model
+### Match Model
 **(not available)**
 
 In future, support a parametrisable `Grammar.Match` Model which can parametrise code token matchers
@@ -150,7 +150,7 @@ for user-defined custom code token matching (see [above](#code-matching)).
 
 
 
-###Lexical Model
+### Lexical Model
 
 `Grammar.Lex` Model defines the mapping of token patterns and token configuration to an associated `token_id` and is a map of the form:
 
@@ -198,7 +198,7 @@ for user-defined custom code token matching (see [above](#code-matching)).
 
 
 
-####Simple Tokens
+#### Simple Tokens
 
 * a literal `null` valued token matches up to 'end-of-line' ; can be useful when needing to match remaining code up to end-of-line (e.g see single-line comments below)
 
@@ -219,7 +219,7 @@ for user-defined custom code token matching (see [above](#code-matching)).
 
 
 
-####Block Tokens
+#### Block Tokens
 
 * `"block"`, `"line-block"`, `"escaped-block"`, `"escaped-line-block"`, `"comment"` token types take pairs of patterns `[start-pattern, end-pattern]`
 
@@ -249,7 +249,7 @@ for user-defined custom code token matching (see [above](#code-matching)).
 
 
 
-####Action Tokens 
+#### Action Tokens
 **(new, experimental)**
 
 `Action` tokens enable the grammar parser to perform some extra context-specific parsing functionality on tokens.
@@ -296,14 +296,14 @@ An `action` token in a grammar **applies only and directly to the token precedin
     // and try to match it to the ID generated from this matched token
     // it pops and matches the tag name (as regex group 1)
     // string replacement codes are similar to javascript's replace function
-    
+
     // note 1: the ID has similar format to the previously pushed ID
     // any format can be used as long as it is consistent (so matching will work correctly)
-    
+
     // note 2: a "pop" : null or with no value, pops the data unconditionally (can be useful sometimes)
-    
+
     "type" : "action",
-    "pop" : "<$1>", 
+    "pop" : "<$1>",
     "msg" : "Tag \"$1\" does not match!"
 }
 
@@ -337,7 +337,7 @@ One should not confuse *semantics* with *context-sensitivity* in grammar. For ex
 There are other approaches to (mild or strong) context-sensitive grammar parsing for example: using indices in productions ([indexed grammars](https://en.wikipedia.org/wiki/Indexed_grammar)) or extra attached attributes ([attribute grammars](https://en.wikipedia.org/wiki/Attribute_grammar)), [visibly pushdown grammars](https://en.wikipedia.org/wiki/Nested_word), [parsing expression grammars with lookaheads](https://en.wikipedia.org/wiki/Parsing_expression_grammar). This approach uses **a set of simple, generic and composable action tokens**, which can also support or simulate other approaches (e.g visibly pushdown tokens, lookahead tokens, lookbehind tokens, attached attributes, etc). Another way to look at it is that `action` tokens enable to declaratively describe **non-linear syntax** (involving multiple correlated dimensions), which in the final analysis is *context-sensitivity* (eg positional memory and correlation).
 
 
-####Lex shorthand type annotations
+#### Lex shorthand type annotations
 **(new, optional)**
 
 Lexical tokens can annotate their `type` in their `token_id` as `"token_id:token_type"` for *convenience*.
@@ -366,7 +366,7 @@ Lexical tokens can annotate their `type` in their `token_id` as `"token_id:token
 ```
 
 
-###Syntax Model
+### Syntax Model
 **(optional)**
 
 `Grammar.Syntax` Model defines the mapping of token context-specific sequences to an associated `composite_token_id` and is a map of the form:
@@ -401,16 +401,16 @@ Lexical tokens can annotate their `type` in their `token_id` as `"token_id:token
         /* the external grammar reference name, here it is the same as the token name */
         "subgrammar":"javascript"
     },
-    
+
     "tag_attribute" : "attribute '=' (string | number)",
-    
+
     /* here `javascript` refers to the token name, NOT the sub-grammar name, although in this case they are the same */
     "script_tag"    : "'<script'.tag tag_attribute* '>'.tag javascript '</script>'.tag",
-    
+
     "other_tag"     : "tag_open | tag_close | text",
-    
+
     "tag"           : "script_tag | other_tag",
-    
+
     "html"          : "tags*"
 
 // other Syntax definitions..
@@ -429,13 +429,13 @@ This way **multiple grammars can be combined and multiplexed** easily and intuit
 
 
 
-####Syntax PEG/BNF-like notations
+#### Syntax PEG/BNF-like notations
 **(new)**
 
 `Syntax` part supports *shorthand definitions* (similar to `PEG` / `BNF` -style definitions) for syntax sequences and groups of syntax sequences (see below).
 
 
-**Note:** In order for a (grammar) specification for (programming) language highlight to be detailed and self-contained (to be re-usable and flexible under the most general conditions), it should model all available types of tokens which play a part in the code and the way it is highlighted (usualy not modeled by other approaches or other grammar specifications), for example: 
+**Note:** In order for a (grammar) specification for (programming) language highlight to be detailed and self-contained (to be re-usable and flexible under the most general conditions), it should model all available types of tokens which play a part in the code and the way it is highlighted (usualy not modeled by other approaches or other grammar specifications), for example:
 
 
 * `<start-of-file>` token (modeled as `^^`, see below)
@@ -560,7 +560,7 @@ Specificaly:
 // 2. positive lookahead feature (i.e and-predicate &t)
 // ARE supported (see above)
 
-// regular expressions can also be defined inside a syntax rule, using /../[i] format, e.g /abc/,  /abc/i 
+// regular expressions can also be defined inside a syntax rule, using /../[i] format, e.g /abc/,  /abc/i
 // this will create a new simple token (with token_id=/abc/i) which is a regular expression
 // using a dotted-style modifier, on the regex defined this way, can style it dynamicaly (see below), e.g /abc/i.style1
 
@@ -613,7 +613,7 @@ Specificaly:
 
 
 
-###Parser
+### Parser
 
 `Grammar.Parser` defines what to parse and in what order ( **only patterns** defined in this part of the `grammar` will **actually be parsed** , everything else is `auxilliary` )
 
@@ -621,7 +621,7 @@ Specificaly:
 * a syntax token used in the `parser`, which is enclosed in brackets `[..]`, i.e as an `array`, is interpreted as an `n-gram`-type token (see syntax part, above). This is used for *convenience ans succintness of notation*, instead of creating  separate `n-gram` token(s), for use in the `parser` part
 
 
-###Modularity and Future Directions
+### Modularity and Future Directions
 
 The model envisioned for modular highlighting is shown below:
 
@@ -650,7 +650,7 @@ The format for a specification should be such that is widely supported, is textu
 
 In order for a (grammar) specification for (programming) language highlight to be detailed and self-contained (to be re-usable and flexible under the most general conditions), and also concise, it should model all available types of tokens/actions which play a part in the code and the way it is highlighted (usualy not modeled by other approaches or other grammar specifications).
 
-For example (see above): 
+For example (see above):
 
 
 * `<start-of-file>`, `<start-of-line>`, `<end-of-line>` token
@@ -658,8 +658,8 @@ For example (see above):
 * `<non-space>`, `<indentation>`, `<dedentation>` token
 * `<block>`, `<delimited>` token (e.g in the sense that `comments`, `strings`, `heredocs`,.. are delimited, block tokens)
 * and so on..
-    
-    
+
+
 
 * handle arbitrary, user-defined, toggle comments and keyword autocompletion functionality (achieved by semanticaly annotating language `comments` and `keywords`)
 * handle arbitrary, user-defined, lint-like syntax-annotation functionality (achieved by modeling language `syntax` analysis except strictly `lexical` analysis, in-context)
